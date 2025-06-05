@@ -33,17 +33,17 @@ Morphological feature classification involves assigning labels that capture gram
 
 Two commonly used approaches for classification are the Perceptron and Multinomial Logistic Regression (MLR). The Perceptron is a mistake-driven algorithm that updates weights only when a prediction is incorrect. In contrast, MLR is a probabilistic model that updates weights based on the gradient of a log-likelihood function using all class probabilities \cite{jurafsky2024slp3}. Both methods can be trained on binary feature representations derived from POS, prefixes, and suffixes.
 
-Accurate morphological classification is essential for downstream tasks such as dependency parsing and machine translation, especially in morphologically complex languages. Our study compares these two algorithms under identical training conditions using accuracy as the evaluation metric, with statistical significance assessed via the paired bootstrap method.
+Accurate morphological classification is essential for downstream tasks such as dependency parsing and machine translation, especially in morphologically complex languages. The study compares these two algorithms under identical training conditions using accuracy as the evaluation metric, with statistical significance assessed via the paired bootstrap method.
 
 
 \section{Methodology}
-We use the Swedish UniMorph dataset, where each line contains a wordform, its POS tag, and a set of morphological features. Our task is to predict the morphological features (e.g., SG;DEF) given a word and its POS.
+Swedish UniMorph dataset are used, where each line contains a wordform, its POS tag, and a set of morphological features. The task is to predict the morphological features (e.g., SG;DEF) given a word and its POS.
 
-\textbf{Feature Extraction:} For both models, we extract binary features consisting of the part-of-speech (POS), and all prefixes and suffixes of the word up to length five. Each feature is combined with the POS to increase disambiguation capacity. For example, for the word \textit{boken} and POS \textit{NOUN}, the features include \texttt{NOUN prefix=b}, \texttt{NOUN suffix=en}, etc.\\
+\textbf{Feature Extraction:} For both models, binary features consisting of the part-of-speech (POS), and all prefixes and suffixes of the word up to length five are used. Each feature is combined with the POS to increase disambiguation capacity. For example, for the word \textit{boken} and POS \textit{NOUN}, the features include \texttt{NOUN prefix=b}, \texttt{NOUN suffix=en}, etc.\\
 \textbf{Labels:} The label to be predicted is the morphological tag (e.g., SG;DEF), excluding the POS tag.\\
 \textbf{Models:} \\Perceptron: A standard online mistake-driven learner. On each error, it updates the weights by \(\pm1\) for the predicted and true classes.\\Multinomial Logistic Regression (MLR): A probabilistic classifier that computes softmax scores for all classes and updates weights using the gradient of the log-likelihood function.\\
 \textbf{Training Setup:} Both models are trained for 3 epochs using the same training and test splits, features, and label sets. Learning rate is set to 1.0 for both models, and no shuffling or regularization is applied.\\
-\textbf{Evaluation:} We compute classification accuracy on the test set. To compare the two models, we use the paired bootstrap test (Jurafsky \& Martin, 2024, \S4.9) with 5000 resampling iterations to determine if differences are statistically significant.
+\textbf{Evaluation:} Model computes the classification accuracy on the test set. To compare the two models, paired bootstrap test (Jurafsky \& Martin, 2024, \S4.9) with 5000 resampling iterations is used to determine if differences are statistically significant.
  tag (e.g., SG;DEF) given the word and its POS.
 
 \textbf{Features:} Binary features are extracted from all prefixes and suffixes (up to length five), combined with POS. \\
@@ -73,14 +73,14 @@ MLR        & 65.80 & 3 \\
 
 \textbf{Observation:} While Perceptron achieved marginally higher accuracy, the difference between the two models was minimal.
 
-\textbf{Statistical Significance:} We applied a paired bootstrap test with 5000 resampling iterations to assess the statistical reliability of the observed accuracy difference. The 95\% confidence interval for the difference in accuracy was: [--0.0068, 0.0156]. Since this interval includes zero, the difference is not statistically significant.
+\textbf{Statistical Significance:} A paired bootstrap test with 5000 resampling iterations is applied to assess the statistical reliability of the observed accuracy difference. The 95\% confidence interval for the difference in accuracy was: [--0.0068, 0.0156]. Since this interval includes zero, the difference is not statistically significant.
 
 \textbf{Error Trends:} Both models showed reduced performance on rare morphological tags, especially low-frequency combinations of definiteness and plurality. Incorporating additional features such as character n-grams or subword representations may help improve generalization.
 
 \section{Discussion and Conclusion}
-Our results indicate that, despite the theoretical strengths of Multinomial Logistic Regression (MLR), the Perceptron achieves slightly higher accuracy in morphological feature classification on the Swedish UniMorph dataset. However, the paired bootstrap test shows that this difference is not statistically significant, suggesting that both models perform comparably in practice.
+The results indicate that, despite the theoretical strengths of Multinomial Logistic Regression (MLR), the Perceptron achieves slightly higher accuracy in morphological feature classification on the Swedish UniMorph dataset. However, the paired bootstrap test shows that this difference is not statistically significant, suggesting that both models perform comparably in practice.
 
-The strong performance of the Perceptron may be attributed to its robustness in handling sparse, binary feature spaces, which aligns well with our prefix/suffix-based features. Moreover, since the model uses direct mistake-driven updates and avoids computing full probability distributions, it may be better suited for limited data settings where overfitting is a concern. The binary nature of the features and the hard decision boundaries of Perceptron likely contribute to its success in this parsing-oriented task.
+The strong performance of the Perceptron may be attributed to its robustness in handling sparse, binary feature spaces, which aligns well with prefix/suffix-based features. Moreover, since the model uses direct mistake-driven updates and avoids computing full probability distributions, it may be better suited for limited data settings where overfitting is a concern. The binary nature of the features and the hard decision boundaries of Perceptron likely contribute to its success in this parsing-oriented task.
 
 In contrast, MLR, while probabilistically grounded, may be more sensitive to feature imbalance and lacks the strong bias toward conservative updates seen in Perceptron. This may lead to suboptimal generalization unless combined with regularization techniques.
 
